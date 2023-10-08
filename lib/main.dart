@@ -1,25 +1,38 @@
+import 'package:basket/cubit/counter_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'cubit/counter_cubit.dart';
 
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => CounterCubit(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: HomePage(),
+      ),
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
-  int numA = 0;
-
-  int numB = 0;
+class HomePage extends StatelessWidget {
+    HomePage({
+    super.key,
+  });
+    int teamApoint = 0;
+    int teamBpoint = 0;
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
+    return BlocConsumer<CounterCubit,CounterState>(builder: (context, state) {
+      return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.orange,
           title: const Text('Points Counter'),
@@ -40,18 +53,14 @@ class _MyAppState extends State<MyApp> {
                         style: TextStyle(fontSize: 32),
                       ),
                       Text(
-                        '$numA',
+                        '$teamApoint',
                         style: const TextStyle(fontSize: 192),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             primary: Colors.orange,
                             minimumSize: const Size(150, 50)),
-                        onPressed: () {
-                          setState(() {
-                            numA++;
-                          });
-                        },
+                        onPressed: () {},
                         child: const Text(
                           'Add 1 Point',
                           style: TextStyle(fontSize: 18, color: Colors.black),
@@ -61,11 +70,7 @@ class _MyAppState extends State<MyApp> {
                         style: ElevatedButton.styleFrom(
                             primary: Colors.orange,
                             minimumSize: const Size(150, 50)),
-                        onPressed: () {
-                          setState(() {
-                            numA += 2;
-                          });
-                        },
+                        onPressed: () {},
                         child: const Text(
                           'Add 2 Point',
                           style: TextStyle(fontSize: 18, color: Colors.black),
@@ -75,11 +80,7 @@ class _MyAppState extends State<MyApp> {
                         style: ElevatedButton.styleFrom(
                             primary: Colors.orange,
                             minimumSize: const Size(150, 50)),
-                        onPressed: () {
-                          setState(() {
-                            numA += 3;
-                          });
-                        },
+                        onPressed: () {},
                         child: const Text(
                           'Add 3 Point',
                           style: TextStyle(fontSize: 18, color: Colors.black),
@@ -107,18 +108,14 @@ class _MyAppState extends State<MyApp> {
                         style: TextStyle(fontSize: 32),
                       ),
                       Text(
-                        '$numB',
+                        '$teamBpoint',
                         style: const TextStyle(fontSize: 192),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             primary: Colors.orange,
                             minimumSize: const Size(150, 50)),
-                        onPressed: () {
-                          setState(() {
-                            numB++;
-                          });
-                        },
+                        onPressed: () {},
                         child: const Text(
                           'Add 1 Point',
                           style: TextStyle(fontSize: 18, color: Colors.black),
@@ -128,11 +125,7 @@ class _MyAppState extends State<MyApp> {
                         style: ElevatedButton.styleFrom(
                             primary: Colors.orange,
                             minimumSize: const Size(150, 50)),
-                        onPressed: () {
-                          setState(() {
-                            numB += 2;
-                          });
-                        },
+                        onPressed: () {},
                         child: const Text(
                           'Add 2 Point',
                           style: TextStyle(fontSize: 18, color: Colors.black),
@@ -142,11 +135,7 @@ class _MyAppState extends State<MyApp> {
                         style: ElevatedButton.styleFrom(
                             primary: Colors.orange,
                             minimumSize: const Size(150, 50)),
-                        onPressed: () {
-                          setState(() {
-                            numB += 3;
-                          });
-                        },
+                        onPressed: () {},
                         child: const Text(
                           'Add 3 Point',
                           style: TextStyle(fontSize: 18, color: Colors.black),
@@ -160,12 +149,7 @@ class _MyAppState extends State<MyApp> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                   primary: Colors.orange, minimumSize: const Size(150, 50)),
-              onPressed: () {
-                setState(() {
-                  numA = 0;
-                  numB = 0;
-                });
-              },
+              onPressed: () {},
               child: const Text(
                 'Reset',
                 style: TextStyle(fontSize: 18, color: Colors.black),
@@ -173,7 +157,13 @@ class _MyAppState extends State<MyApp> {
             ),
           ],
         ),
-      ),
-    );
+      );
+    }, listener: (context, state) {
+      if (state is CounterAIncremantState) {
+        teamApoint = BlocProvider.of<CounterCubit>(context).numA;
+      }else{
+        teamBpoint = BlocProvider.of<CounterCubit>(context).numB;
+      }
+    });
   }
 }
